@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Soulace 服務架構圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
+:root{
+  --bg:#1c1c1c; --surface:#232323; --surface-2:#2a2a2a;
+  --border:#343434; --border-strong:#4d4d4d;
+  --fg:#ededed; --fg-muted:#a1a1a1; --fg-subtle:#949494;
+  --accent:#3ecf8e; --accent-weak:#1c3b2e; --accent-fg:#00291a;
+  --title-grad:linear-gradient(100deg,#6ee7b7 0%,#3ecf8e 45%,#1fa971 100%);
+  --b-fly:#8B5CF6; --b-supabase:#3FCF8E; --b-cloudflare:#F38020; --b-resend:#FFFFFF; --b-google:#4285F4; --b-github:#FFFFFF;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#ffffff; --surface:#fbfbfb; --surface-2:#f4f4f4;
+    --border:#e6e6e6; --border-strong:#c9c9c9;
+    --fg:#171717; --fg-muted:#525252; --fg-subtle:#6b6b6b;
+    --accent:#006239; --accent-weak:#dcf5e9; --accent-fg:#ffffff;
+    --title-grad:linear-gradient(100deg,#10b981 0%,#047857 55%,#065f46 100%);
+    --b-fly:#24175B; --b-supabase:#3FCF8E; --b-cloudflare:#F38020; --b-resend:#000000; --b-google:#4285F4; --b-github:#181717;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --surface:#fbfbfb; --surface-2:#f4f4f4;
+  --border:#e6e6e6; --border-strong:#c9c9c9;
+  --fg:#171717; --fg-muted:#525252; --fg-subtle:#6b6b6b;
+  --accent:#006239; --accent-weak:#dcf5e9; --accent-fg:#ffffff;
+  --title-grad:linear-gradient(100deg,#10b981 0%,#047857 55%,#065f46 100%);
+    --b-fly:#24175B; --b-supabase:#3FCF8E; --b-cloudflare:#F38020; --b-resend:#000000; --b-google:#4285F4; --b-github:#181717;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,-apple-system,'Noto Sans TC','PingFang TC',sans-serif;font-size:16px;line-height:1.65}
+.wrap{max-width:1100px;margin:0 auto;padding-block:56px 40px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-style:normal;margin:0}
+header{text-align:center}
+h1{display:inline-block;font-weight:700;font-size:clamp(1.25rem,3.4vw,2.1rem);letter-spacing:-0.01em;line-height:1.25;white-space:nowrap;color:var(--accent)}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){h1{background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent}}
+h2{font-weight:600;font-size:1.35rem;letter-spacing:-0.01em;line-height:1.3;margin-bottom:20px}
+h3{font-weight:600;font-size:1.05rem;line-height:1.3}
+section{margin-top:64px}
+section.first{margin-top:28px}
+.lead{max-width:44em;color:var(--fg-muted);margin:0 0 20px}
+.meta{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--fg-subtle);margin:0}
+code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.9em;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:1px 6px}
+.diagram{overflow-x:auto;border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:20px}
+.diagram svg{display:block;width:100%;min-width:640px;height:auto;color:var(--fg)}
+.node{fill:var(--surface-2);stroke:var(--border-strong);stroke-width:1.5}
+.hub{fill:var(--surface-2);stroke:var(--b-fly);stroke-width:2}
+.lg{fill:var(--fg)}
+.n-supabase{stroke:var(--b-supabase)}
+.n-cloudflare{stroke:var(--b-cloudflare)}
+.n-resend{stroke:var(--b-resend)}
+.n-google{stroke:var(--b-google)}
+.n-github{stroke:var(--b-github)}
+.l-fly{fill:var(--b-fly)}
+.l-supabase{fill:var(--b-supabase)}
+.l-cloudflare{fill:var(--b-cloudflare)}
+.l-resend{fill:var(--b-resend)}
+.l-google{fill:var(--b-google)}
+.l-github{fill:var(--b-github)}
+.edge{fill:none;stroke:var(--border-strong);stroke-width:1.5}
+.edge-deploy{fill:none;stroke:var(--accent);stroke-width:1.5}
+.arrow{fill:var(--border-strong)}
+.arrow-accent{fill:var(--accent)}
+.t-name{fill:var(--fg);font:600 15px Inter,'Noto Sans TC','PingFang TC',sans-serif}
+.t-sub{fill:var(--fg-muted);font:400 12px Inter,'Noto Sans TC','PingFang TC',sans-serif}
+.t-edge{fill:var(--accent);font:500 12px 'JetBrains Mono',ui-monospace,monospace}
+.diagram a{cursor:pointer}
+.pill{fill:var(--accent-weak);stroke:var(--accent);stroke-width:1.5;transition:fill .15s}
+.pill-t{fill:var(--accent);font:500 13px 'JetBrains Mono',ui-monospace,monospace;transition:fill .15s}
+.diagram a:hover .pill{fill:var(--accent)}
+.diagram a:hover .pill-t{fill:var(--bg)}
+.diagram a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px;min-width:0;transition:border-color .15s}
+.card:hover{border-color:var(--border-strong)}
+.card-head{display:flex;align-items:center;gap:12px}
+.logo{width:28px;height:28px;flex:none;color:var(--fg)}
+.logo.c-fly{color:var(--b-fly)}
+.logo.c-supabase{color:var(--b-supabase)}
+.logo.c-cloudflare{color:var(--b-cloudflare)}
+.logo.c-resend{color:var(--b-resend)}
+.logo.c-google{color:var(--b-google)}
+.logo.c-github{color:var(--b-github)}
+.card dl{margin:0;display:flex;flex-direction:column;gap:14px}
+.card dt{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.08em;color:var(--fg-subtle);margin-bottom:4px}
+.card dd{margin:0;overflow-wrap:anywhere}
+.card dd.who{font-size:14px}
+.note{display:block;margin-top:6px;font-size:13px;color:var(--fg-muted)}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;line-height:1.7}
+.badge.paid{background:var(--accent-weak);color:var(--accent);border:1px solid var(--accent)}
+.badge.capped{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.badge.nocard{background:transparent;color:var(--fg-muted);border:1px solid var(--border)}
+a{color:var(--accent);text-underline-offset:3px}
+.card a{margin-top:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;overflow-wrap:anywhere}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.guide{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:20px;max-width:44em}
+.guide p{margin:0 0 12px}
+.guide .rule{font-size:1.1rem}
+.guide ul{margin:0;padding-left:1.2em}
+.guide li{margin-bottom:6px}
+.future ul{max-width:44em;padding-left:1.2em;margin:0}
+.future li{margin-bottom:10px}
+footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border)}
+footer p{margin:0 0 6px}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+</style>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs><path id="p-fly" d="M11.987 0c-2.45-.01-5.002.925-6.541 2.897-1.17 1.502-1.664 3.474-1.49 5.356.29 2.112 1.476 3.96 2.676 5.672a41.5 41.5 0 0 0 4.216 4.831c-1.063.832-1.943 2.286-1.357 3.644.821 2.32 4.665 2.05 5.122-.372.39-1.288-.694-2.533-1.428-3.309 2.388-2.431 4.706-5.036 6.17-8.145.595-1.32.902-2.802.614-4.24-.28-2.341-1.823-4.473-3.967-5.46C14.76.266 13.364.016 11.987 0m-.236 1.577v15.534C9.881 13.483 7.724 9.266 8.73 5.069c.35-1.539 1.253-3.309 3.02-3.492m1.996.04c1.534.357 3.031 1.096 3.906 2.48 1.3 1.93 1.318 4.55.1 6.521-1.268 2.395-3.06 4.463-4.916 6.415 1.472-2.974 3.074-6.106 3.182-9.5-.043-2.08-.438-4.612-2.272-5.916M11.97 20.103c.848.342 1.597 1.983.153 2.173-.664.15-1.367-.599-.995-1.222.213-.355.488-.73.842-.95"/><path id="p-supabase" d="M11.9 1.036c-.015-.986-1.26-1.41-1.874-.637L.764 12.05C-.33 13.427.65 15.455 2.409 15.455h9.579l.113 7.51c.014.985 1.259 1.408 1.873.636l9.262-11.653c1.093-1.375.113-3.403-1.645-3.403h-9.642z"/><path id="p-cloudflare" d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.168-.5625-2.5463-2.835-4.4453-5.5499-4.4453-2.5039 0-4.6284 1.6177-5.3876 3.8614-.4927-.3658-1.1187-.5625-1.794-.499-1.2026.119-2.1665 1.083-2.2861 2.2856-.0283.31-.0069.6128.0635.894C1.5683 13.171 0 14.7754 0 16.752c0 .1748.0142.3515.0352.5273.0141.083.0844.1475.1689.1475h15.9814c.0909 0 .1758-.0645.2032-.1553l.12-.4268zm2.7568-5.5634c-.0771 0-.1611 0-.2383.0112-.0566 0-.1054.0415-.127.0976l-.3378 1.1744c-.1475.5068-.0918.9707.1543 1.3164.2256.3164.6055.498 1.0625.5195l1.8437.1133c.0557 0 .1055.0263.1329.0703.0283.043.0351.1074.0214.1562-.0283.084-.1132.1485-.204.1553l-1.921.1123c-1.041.0488-2.1582.8867-2.5527 1.914l-.1406.3585c-.0283.0713.0215.1416.0986.1416h6.5977c.0771 0 .1474-.0489.169-.126.1122-.4082.1757-.837.1757-1.2803 0-2.6025-2.125-4.727-4.7344-4.727"/><path id="p-resend" d="M2.023 0v24h5.553v-8.434h2.998L15.326 24h6.65l-5.372-9.258a7.652 7.652 0 0 0 3.316-3.016c.709-1.21 1.062-2.57 1.062-4.08 0-1.462-.353-2.767-1.062-3.91-.709-1.165-1.692-2.079-2.95-2.742C15.737.331 14.355 0 12.823 0Zm5.553 4.87h4.219c.731 0 1.349.125 1.851.376.526.252.925.618 1.2 1.098.274.457.412.994.412 1.611S15.132 9.12 14.88 9.6c-.229.48-.572.856-1.03 1.13-.434.252-.948.38-1.542.38H7.576Z"/><path id="p-google" d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/><path id="p-github" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></defs></svg>
+<div class="wrap">
+<header>
+  <h1>Soulace 服務架構圖</h1>
+</header>
+
+<section class="first">
+  <div class="diagram">
+  <svg viewBox="0 0 900 368" role="img" aria-labelledby="dg-t">
+    <title id="dg-t">六個服務的關係圖：GitHub 部署到 Fly.io，Fly.io 再連到 Supabase、Cloudflare R2、Resend、Google OAuth</title>
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow"/></marker>
+      <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" class="arrow-accent"/></marker>
+    </defs>
+    <path class="edge" d="M500 184C570 184 570 40 638 40" marker-end="url(#ah)"/>
+    <path class="edge" d="M500 184C570 184 570 136 638 136" marker-end="url(#ah)"/>
+    <path class="edge" d="M500 184C570 184 570 232 638 232" marker-end="url(#ah)"/>
+    <path class="edge" d="M500 184C570 184 570 328 638 328" marker-end="url(#ah)"/>
+    <path class="edge-deploy" d="M220 184H288" marker-end="url(#ah2)"/>
+    <text class="t-edge" x="254" y="170" text-anchor="middle">部署</text>
+    <rect class="node n-github" x="10" y="152" width="210" height="64" rx="10"/>
+    <g class="lg l-github" transform="translate(26,173) scale(0.92)"><use href="#p-github"/></g>
+    <text class="t-name" x="62" y="181">GitHub</text>
+    <text class="t-sub" x="62" y="199">程式碼託管</text>
+    <a href="https://soulace-interior.fly.dev/admin" target="_blank" rel="noopener noreferrer">
+      <rect class="pill" x="353" y="112" width="84" height="26" rx="13"/>
+      <text class="pill-t" x="395" y="130" text-anchor="middle">後台連結</text>
+    </a>
+    <rect class="hub" x="290" y="152" width="210" height="64" rx="10"/>
+    <g class="lg l-fly" transform="translate(306,173) scale(0.92)"><use href="#p-fly"/></g>
+    <text class="t-name" x="342" y="181">Fly.io</text>
+    <text class="t-sub" x="342" y="199">主機</text>
+    <rect class="node n-supabase" x="640" y="8" width="240" height="64" rx="10"/>
+    <g class="lg l-supabase" transform="translate(656,29) scale(0.92)"><use href="#p-supabase"/></g>
+    <text class="t-name" x="692" y="37">Supabase</text>
+    <text class="t-sub" x="692" y="55">資料庫</text>
+    <rect class="node n-cloudflare" x="640" y="104" width="240" height="64" rx="10"/>
+    <g class="lg l-cloudflare" transform="translate(656,125) scale(0.92)"><use href="#p-cloudflare"/></g>
+    <text class="t-name" x="692" y="133">Cloudflare R2</text>
+    <text class="t-sub" x="692" y="151">照片儲存</text>
+    <rect class="node n-resend" x="640" y="200" width="240" height="64" rx="10"/>
+    <g class="lg l-resend" transform="translate(656,221) scale(0.92)"><use href="#p-resend"/></g>
+    <text class="t-name" x="692" y="229">Resend</text>
+    <text class="t-sub" x="692" y="247">寄信</text>
+    <rect class="node n-google" x="640" y="296" width="240" height="64" rx="10"/>
+    <g class="lg l-google" transform="translate(656,317) scale(0.92)"><use href="#p-google"/></g>
+    <text class="t-name" x="692" y="325">Google OAuth</text>
+    <text class="t-sub" x="692" y="343">後台登入</text>
+  </svg>
+  </div>
+</section>
+
+<section>
+  <h2>六個服務</h2>
+  <p class="lead">Owner 是帳號的擁有者，Admin 是日常維護的人。付費狀態分三種：<strong>有費用</strong>（這個服務真的在收錢）、<strong>有免費額度</strong>（已綁卡但用量還在免費範圍內）、<strong>無綁卡</strong>（沒有綁任何付款方式）。</p>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><svg class="logo c-fly" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Fly.io 標誌"><use href="#p-fly"/></svg><h3>Fly.io</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>網站與後台的主機。網頁、後台、PDF 匯出都是這台在跑。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Soulace（公司帳號）</dd></div>
+        <div><dt>Admin</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge paid">有費用</span></dd></div>
+        <div><dt>登入方式</dt><dd>按「Sign in with GitHub」</dd></div>
+      </dl>
+      <a href="https://fly.io" target="_blank" rel="noopener noreferrer">fly.io</a>
+    </article>
+    <article class="card">
+      <div class="card-head"><svg class="logo c-supabase" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Supabase 標誌"><use href="#p-supabase"/></svg><h3>Supabase</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>資料庫。客戶資料、需求單、報價、帳目都存在這裡。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Soulace（公司帳號）</dd></div>
+        <div><dt>Admin</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge nocard">無綁卡</span><span class="note">目前用免費方案。</span></dd></div>
+        <div><dt>登入方式</dt><dd>按「Continue with GitHub」</dd></div>
+      </dl>
+      <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">supabase.com</a>
+    </article>
+    <article class="card">
+      <div class="card-head"><svg class="logo c-cloudflare" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Cloudflare 標誌"><use href="#p-cloudflare"/></svg><h3>Cloudflare</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>照片儲存（R2）。相簿裡的照片都存在這裡。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Soulace（公司帳號）</dd></div>
+        <div><dt>Admin</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge capped">有免費額度</span><span class="note">已綁信用卡，用量在免費額度內。</span></dd></div>
+        <div><dt>登入方式</dt><dd>按「Sign in with Google」</dd></div>
+      </dl>
+      <a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">cloudflare.com</a>
+    </article>
+    <article class="card">
+      <div class="card-head"><svg class="logo c-resend" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Resend 標誌"><use href="#p-resend"/></svg><h3>Resend</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>寄信服務。有新需求單時寄通知信。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>Admin</dt><dd class="who">—</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge nocard">無綁卡</span><span class="note">目前幾乎沒在用。</span></dd></div>
+        <div><dt>登入方式</dt><dd>按「Log in with GitHub」</dd></div>
+      </dl>
+      <a href="https://resend.com" target="_blank" rel="noopener noreferrer">resend.com</a>
+    </article>
+    <article class="card">
+      <div class="card-head"><svg class="logo c-google" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Google OAuth 標誌"><use href="#p-google"/></svg><h3>Google OAuth</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>後台登入。設計師用 Google 帳號登入後台時，是這個在驗證身分。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Soulace（公司帳號）</dd></div>
+        <div><dt>Admin</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge nocard">無綁卡</span></dd></div>
+        <div><dt>登入方式</dt><dd>在 Google Cloud Console，只能用 Google 帳號登入</dd></div>
+      </dl>
+      <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer">console.cloud.google.com</a>
+    </article>
+    <article class="card">
+      <div class="card-head"><svg class="logo c-github" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="GitHub 標誌"><use href="#p-github"/></svg><h3>GitHub</h3></div>
+      <dl>
+        <div><dt>用途</dt><dd>程式碼託管。所有程式碼放在這裡，也從這裡部署到 Fly.io。</dd></div>
+        <div><dt>Owner</dt><dd class="who">Soulace（公司帳號）</dd></div>
+        <div><dt>Admin</dt><dd class="who">Daniel（工程）</dd></div>
+        <div><dt>付費狀態</dt><dd><span class="badge nocard">無綁卡</span></dd></div>
+        <div><dt>登入方式</dt><dd>按「Continue with Google」</dd></div>
+      </dl>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer">github.com</a>
+    </article>
+  </div>
+</section>
+
+<section>
+  <h2>登入指引</h2>
+  <div class="guide">
+    <p class="rule"><strong>先找 GitHub 登入按鈕，沒有才用 Google。</strong></p>
+    <ul>
+      <li>你的 GitHub 帳號本身就是用 Google 帳號登入的，所以你實際上只需要記得一組 Google 帳號。</li>
+      <li>不確定按哪個的時候，先試 GitHub。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="future">
+  <h2>未來計劃</h2>
+  <ul>
+    <li>之後會在 Cloudflare 購買網域並管理 DNS。</li>
+    <li>目前還不需要：訪客主要從 IG 過來，搜尋引擎的優先度低，現在的網址 <code>soulace-interior.fly.dev</code> 暫時夠用。</li>
+  </ul>
+</section>
+
+<footer>
+  <p class="meta">各服務名稱與標誌為其各自擁有者之商標，本頁僅作辨識用途。</p>
+  <p class="meta">最後更新：2026-10-23</p>
+</footer>
+</div>
+</body>
+</html>
