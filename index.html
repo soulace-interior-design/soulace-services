@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
 <style>
 :root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 img{max-width:100%}
@@ -124,14 +125,88 @@ footer p{margin:0 0 6px}
 .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 .tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 [role="tabpanel"]{scroll-margin-top:90px}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;max-width:44em}
-.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
-.step-n{flex:none;width:32px;height:32px;border-radius:999px;background:var(--accent-weak);color:var(--accent);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:14px;font-weight:500}
-.step-b{min-width:0}
-.step-b h3{margin-bottom:6px}
-.step-b p{margin:0 0 8px}
-.step-b p:last-child{margin-bottom:0}
-.step-b ul{margin:0 0 8px;padding-left:1.2em}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 12px;padding:0;list-style:none;font-size:13px;color:var(--fg-muted)}
+.legend li{display:flex;align-items:center;gap:8px}
+.sw{width:24px;height:14px;border-radius:4px;border:1.5px solid var(--border-strong);background:var(--surface-2);flex:none}
+.sw-s{border-color:var(--accent)}
+.sw-m{border:1.5px dashed var(--accent);background:var(--accent-weak)}
+.hint{display:none;margin:0 0 20px;font-size:13px;color:var(--fg-subtle)}
+.js .hint{display:block}
+.tl{counter-reset:all c s;list-style:none;margin:0 0 8px;padding:0;position:relative;display:flex;flex-direction:column;gap:14px}
+.tl::before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:var(--border-strong)}
+.tl>.th,.tl>.rail,.tl>.lk{display:none}
+.ev{position:relative;min-width:0;padding-left:44px;counter-increment:all}
+.ev-c{counter-increment:all c}
+.ev-s,.ev-m{counter-increment:all s}
+.ev:hover{z-index:31}
+.ev.active{z-index:30}
+.num{position:absolute;left:0;top:17px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--bg);color:var(--fg-muted);font:500 13px/27px 'JetBrains Mono',ui-monospace,monospace;text-align:center;z-index:1}
+.num::before{content:counter(all)}
+.ev-s .num{border-color:var(--accent);color:var(--accent);background:var(--accent-weak)}
+.ev-m .num{border:1.5px dashed var(--accent);color:var(--accent);background:var(--accent-weak)}
+.enode{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;text-align:left;width:100%;min-height:64px;display:flex;flex-direction:column;justify-content:center;margin:0;padding:10px 14px;background:var(--surface-2);border:1.5px solid var(--border-strong);border-radius:10px;cursor:default;transition:border-color .15s,background .15s}
+.ev-s .enode{border-color:var(--accent)}
+.ev-m .enode{border:1.5px dashed var(--accent);background:var(--accent-weak)}
+.js .enode{cursor:pointer}
+.enode:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.ev.active .enode{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.etag{font:500 11px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.06em;color:var(--fg-subtle)}
+.ev-m .etag{color:var(--accent)}
+.etitle{font-weight:600;font-size:15px;line-height:1.4}
+.tip{margin-top:8px;min-width:0}
+.tip-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.js .ev.active .tip-box{border-color:var(--accent)}
+.tip p{margin:0 0 8px;font-size:14px;line-height:1.6}
+.tip p:last-child{margin-bottom:0}
+.shot{margin:12px 0 0}
+.shot img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:6px}
+.shot.tall{max-width:280px;margin-inline:auto}
+.shot figcaption{margin-top:6px;font-size:12px;color:var(--fg-subtle)}
+.ph{aspect-ratio:16/10;border:2px dashed var(--border-strong);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px;text-align:center;color:var(--fg-muted);font-size:14px;font-weight:600}
+.ph small{font-size:12px;font-weight:400;color:var(--fg-subtle)}
+.js .tip{display:none}
+.js .ev.active .tip{display:block}
+@media (min-width:760px){
+  .tl{display:grid;grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr);row-gap:26px;margin-bottom:28px}
+  .tl::before{display:none}
+  .tl>.th,.tl>.rail,.tl>.lk{display:block}
+  .th{grid-row:1;text-align:center;font-weight:600;font-size:16px;line-height:1.3;padding:8px 0}
+  .th small{display:block;font-weight:400;font-size:13px;color:var(--fg-muted)}
+  .th-c{grid-column:1}
+  .th-s{grid-column:3;color:var(--accent)}
+  .rail{position:relative;z-index:0;pointer-events:none}
+  .rail::before{content:"";position:absolute;left:calc(50% - 1px);top:0;bottom:-18px;width:2px;background:var(--border-strong)}
+  .rail::after{content:"";position:absolute;left:calc(50% - 6px);bottom:-24px;border:6px solid transparent;border-top:9px solid var(--border-strong);border-bottom:0}
+  .rail-c{grid-column:1;grid-row:2/10}
+  .rail-s{grid-column:3;grid-row:4/11}
+  .rail-s::before{background:var(--accent)}
+  .rail-s::after{border-top-color:var(--accent)}
+  .ev{padding-left:0;grid-row:var(--r);z-index:1}
+  .ev-c{grid-column:1}
+  .ev-s,.ev-m{grid-column:3}
+  .num{left:14px}
+  .num::before{content:counter(c)}
+  .ev-s .num::before,.ev-m .num::before{content:counter(s)}
+  .enode{padding-left:58px}
+  .ev-c .etag,.ev-s .etag{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .lk{grid-row:var(--r);grid-column:2;position:relative;height:64px;color:var(--accent);z-index:1}
+  .lk span{position:absolute;left:0;right:0;top:calc(50% - 22px);text-align:center;font:500 11px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.04em;white-space:nowrap}
+  .lk::before{content:"";position:absolute;left:4px;right:4px;top:calc(50% - 1px);height:2px;background:var(--accent)}
+  .lk::after{content:"";position:absolute;top:calc(50% - 6px);right:4px;border:6px solid transparent;border-left:9px solid var(--accent);border-right:0}
+  .lk-l::after{right:auto;left:4px;border-left:0;border-right:9px solid var(--accent)}
+  .lk-d::before{background:none;height:0;border-top:2px dashed var(--accent)}
+  .js .tip{position:absolute;top:100%;left:0;width:min(380px,calc(100vw - 40px));margin:0;padding-top:8px;z-index:40}
+  .js .ev-s .tip,.js .ev-m .tip{left:auto;right:0}
+  .js .ev.up .tip{top:auto;bottom:100%;padding-top:0;padding-bottom:8px}
+  .js .tip-box{border-color:var(--accent);box-shadow:0 12px 32px color-mix(in srgb,var(--fg) 28%,transparent)}
+  .js .ev:has(.enode:focus-visible) .tip{display:block}
+  .js .tip{pointer-events:none}
+  .js .ev.active .tip{pointer-events:auto}
+}
+@media (min-width:760px) and (hover:hover){
+  .js .ev:hover .tip{display:block}
+  .js .ev:hover .enode{border-color:var(--accent)}
+}
 .callouts{display:flex;flex-direction:column;gap:16px}
 .callouts .guide h3{margin-bottom:8px}
 .callouts .guide p:last-child{margin-bottom:0}
@@ -297,33 +372,81 @@ footer p{margin:0 0 6px}
 <div id="flow" role="tabpanel" aria-labelledby="tab-flow">
 <section class="first">
   <h2>客戶流程</h2>
-  <p class="lead">從客戶在官網留下資料，到他填完需求表單，中間一共五步。哪一步資料會出現在哪裡，看這裡就知道。</p>
-  <ol class="steps">
-    <li class="step"><span class="step-n" aria-hidden="true">1</span><div class="step-b">
-      <h3>客戶在官網填諮詢表單</h3>
-      <p>官網所有「預約諮詢」按鈕，都指到同一張諮詢表單。客戶要填七個欄位：</p>
-      <ul><li>稱呼、Email、手機</li><li>服務類型、縣市</li><li>空間狀態、預算級距</li></ul>
-      <p>送出後，客戶會被帶到 Calendly 預約時間。</p>
-    </div></li>
-    <li class="step"><span class="step-n" aria-hidden="true">2</span><div class="step-b">
-      <h3>資料在送出那一刻就進系統</h3>
-      <p>不是預約完成才進來。所以就算對方填完表單、沒有去預約，後台一樣看得到這個人。這是刻意的設計，避免漏掉有興趣的客戶。</p>
-    </div></li>
-    <li class="step"><span class="step-n" aria-hidden="true">3</span><div class="step-b">
-      <h3>後台看得到的是「客戶」，不是「需求單」</h3>
-      <p>諮詢表單只會建立客戶資料，<strong>不會</strong>建立案場，也不會產生需求單。</p>
-      <p>想找剛填表單的人，請去後台的「客戶管理」頁，不是「需求單」頁。案場要等你們談完、確定開案之後，由你在後台手動建立。</p>
-    </div></li>
-    <li class="step"><span class="step-n" aria-hidden="true">4</span><div class="step-b">
-      <h3>開案後，從案場發需求表單的私密連結</h3>
-      <p>進到案場的「需求單」分頁，產生一條專屬連結，發給客戶。</p>
-      <p>客戶填的是完整的需求表單。家電清單已經併成表單裡的其中一個步驟，客戶可以略過。</p>
-    </div></li>
-    <li class="step"><span class="step-n" aria-hidden="true">5</span><div class="step-b">
-      <h3>客戶填完即自動歸戶</h3>
-      <p>送出的需求單會直接掛在那個案場底下，不需要人工對應。</p>
-      <p>同一個案場可以重複填，每次都存成新的一筆，最新的排在最上面。</p>
-    </div></li>
+  <p class="lead">兩條軌道並排，由上往下是時間順序。左邊是客戶看到、做的事，右邊是系統端發生的事。箭頭表示「左邊做了，右邊就產生」。有些系統動作不是客戶觸發的，而是工作室手動做的，這是兩邊交接的地方。</p>
+  <ul class="legend" aria-label="圖例">
+    <li><span class="sw" aria-hidden="true"></span>客戶的動作</li>
+    <li><span class="sw sw-s" aria-hidden="true"></span>系統自動發生</li>
+    <li><span class="sw sw-m" aria-hidden="true"></span>工作室手動（交接點）</li>
+  </ul>
+  <p class="hint">游標移到節點上可看詳細說明；點一下固定顯示，再點一次或點空白處取消。觸控裝置請直接點節點。</p>
+  <ol class="tl" aria-label="客戶與系統的雙軌時間軸">
+    <li class="th th-c" aria-hidden="true">客戶<small>他看到什麼、做什麼</small></li>
+    <li class="th th-s" aria-hidden="true">系統<small>資料端發生什麼</small></li>
+    <li class="rail rail-c" aria-hidden="true"></li>
+    <li class="rail rail-s" aria-hidden="true"></li>
+    <li class="lk lk-r" style="--r:4" aria-hidden="true"><span>觸發</span></li>
+    <li class="lk lk-l lk-d" style="--r:7" aria-hidden="true"><span>發給客戶</span></li>
+    <li class="lk lk-r" style="--r:9" aria-hidden="true"><span>觸發</span></li>
+    <li class="ev ev-c" style="--r:2">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c1"><span class="etag">客戶</span><span class="etitle">點「預約諮詢」</span></button>
+      <div class="tip" role="tooltip" id="tip-c1"><div class="tip-box"><p>官網上所有「預約諮詢」按鈕，都指到同一張諮詢表單。客戶不管從哪個位置點，都會到同一處。</p></div></div>
+    </li>
+    <li class="ev ev-c" style="--r:3">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c2"><span class="etag">客戶</span><span class="etitle">填諮詢表單</span></button>
+      <div class="tip" role="tooltip" id="tip-c2"><div class="tip-box"><p>客戶要填七個欄位：稱呼、Email、手機、服務類型、縣市、空間狀態、預算級距。</p><figure class="shot tall"><img src="images/consult-form.png" width="600" height="1004" alt="諮詢表單的桌機畫面，由上而下是稱呼、Email、手機、服務類型、縣市、空間狀態、預算級距，最下面是「下一步：預約時段」按鈕" decoding="async"><figcaption>諮詢表單（桌機畫面）</figcaption></figure></div></div>
+    </li>
+    <li class="ev ev-c" style="--r:4">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c3"><span class="etag">客戶</span><span class="etitle">送出並預約</span></button>
+      <div class="tip" role="tooltip" id="tip-c3"><div class="tip-box"><p>送出後，客戶會被帶到 Calendly 預約時間。</p><p>資料在送出的那一刻就進系統，不是等預約完成才進來。</p></div></div>
+    </li>
+    <li class="ev ev-s" style="--r:4">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s1"><span class="etag">系統 · 自動</span><span class="etitle">建立客戶資料</span></button>
+      <div class="tip" role="tooltip" id="tip-s1"><div class="tip-box"><p>送出的那一刻，系統建立一筆「客戶」資料。就算對方沒有去預約，後台的「客戶管理」一樣看得到這個人。這是刻意的設計，避免漏掉有興趣的客戶。</p><p><strong>只建立客戶，不建立案場，也不產生需求單。</strong>想找剛填表單的人，請去「客戶管理」，不是「需求單」頁。</p><figure class="shot"><div class="ph" role="img" aria-label="畫面截圖待補：客戶管理列表">畫面截圖待補<small>客戶管理列表</small></div></figure></div></div>
+    </li>
+    <li class="ev ev-s" style="--r:5">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s2"><span class="etag">系統 · 自動</span><span class="etitle">寄通知信</span></button>
+      <div class="tip" role="tooltip" id="tip-s2"><div class="tip-box"><p>同時寄一封通知信給擁有者，讓擁有者知道有新的諮詢進來。</p></div></div>
+    </li>
+    <li class="ev ev-m" style="--r:6">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s3"><span class="etag">工作室手動</span><span class="etitle">建立案場</span></button>
+      <div class="tip" role="tooltip" id="tip-s3"><div class="tip-box"><p>這一步由工作室手動做，不是客戶觸發的。</p><p>要等雙方談完、確定開案之後，才在後台建立案場。</p></div></div>
+    </li>
+    <li class="ev ev-m" style="--r:7">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s4"><span class="etag">工作室手動</span><span class="etitle">產生專屬連結</span></button>
+      <div class="tip" role="tooltip" id="tip-s4"><div class="tip-box"><p>同樣由工作室手動做。進到案場的「需求單」分頁，產生一條專屬連結，再發給客戶。</p><figure class="shot"><div class="ph" role="img" aria-label="畫面截圖待補：案場的分享連結區塊">畫面截圖待補<small>案場的分享連結區塊</small></div></figure></div></div>
+    </li>
+    <li class="ev ev-c" style="--r:7">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c4"><span class="etag">客戶</span><span class="etitle">收到專屬連結</span></button>
+      <div class="tip" role="tooltip" id="tip-c4"><div class="tip-box"><p>客戶收到設計師給的專屬連結。這是開案之後才會發生的事。</p></div></div>
+    </li>
+    <li class="ev ev-c up" style="--r:8">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c5"><span class="etag">客戶</span><span class="etitle">填需求表單</span></button>
+      <div class="tip" role="tooltip" id="tip-c5"><div class="tip-box"><p>客戶用專屬連結填完整的需求表單。</p><p>家電清單是表單裡的其中一個步驟，客戶可以略過。</p><figure class="shot"><div class="ph" role="img" aria-label="畫面截圖待補：專屬連結的需求表單">畫面截圖待補<small>專屬連結的需求表單</small></div></figure></div></div>
+    </li>
+    <li class="ev ev-c up" style="--r:9">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-c6"><span class="etag">客戶</span><span class="etitle">送出需求單</span></button>
+      <div class="tip" role="tooltip" id="tip-c6"><div class="tip-box"><p>客戶按下送出，這份需求單就送進系統。</p></div></div>
+    </li>
+    <li class="ev ev-s up" style="--r:9">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s5"><span class="etag">系統 · 自動</span><span class="etitle">需求單寫入</span></button>
+      <div class="tip" role="tooltip" id="tip-s5"><div class="tip-box"><p>需求單寫入系統，<strong>自動掛在那個案場底下</strong>，不需要人工對應。</p></div></div>
+    </li>
+    <li class="ev ev-s up" style="--r:10">
+      <span class="num" aria-hidden="true"></span>
+      <button type="button" class="enode" aria-describedby="tip-s6"><span class="etag">系統 · 自動</span><span class="etitle">出現在案場</span></button>
+      <div class="tip" role="tooltip" id="tip-s6"><div class="tip-box"><p>需求單出現在案場的「需求單」分頁。</p><p>同一個案場可以重複填，每次都存成新的一筆，最新的排在最上面。</p><figure class="shot"><div class="ph" role="img" aria-label="畫面截圖待補：案場的「需求單」分頁">畫面截圖待補<small>案場的「需求單」分頁</small></div></figure></div></div>
+    </li>
   </ol>
 </section>
 
@@ -404,6 +527,27 @@ footer p{margin:0 0 6px}
   window.addEventListener('hashchange',show);
   window.addEventListener('popstate',show);
   show();
+})();
+</script>
+<script>
+(function(){
+  var evs=[].slice.call(document.querySelectorAll('.ev'));
+  var cur=null;
+  function pin(ev){
+    if(cur){cur.classList.remove('active');cur.querySelector('.enode').setAttribute('aria-expanded','false')}
+    cur=ev;
+    if(cur){cur.classList.add('active');cur.querySelector('.enode').setAttribute('aria-expanded','true')}
+  }
+  evs.forEach(function(ev){
+    var b=ev.querySelector('.enode');
+    b.setAttribute('aria-expanded','false');
+    b.addEventListener('click',function(){pin(cur===ev?null:ev)});
+  });
+  document.addEventListener('click',function(e){if(cur&&!cur.contains(e.target))pin(null)});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&cur){var b=cur.querySelector('.enode');pin(null);b.focus()}
+  });
+  window.addEventListener('hashchange',function(){pin(null)});
 })();
 </script>
 </body>
